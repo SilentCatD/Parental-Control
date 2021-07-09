@@ -1,0 +1,5 @@
+cryptography
+pynput
+pyautogui
+pywin32
+Pillow
