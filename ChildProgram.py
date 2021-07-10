@@ -18,21 +18,13 @@ def shutdown():
 class MainProgram:
     def __init__(self, master):
         self.master = master
-        self.master.title("Parental Control")
-        windowWidth = self.master.winfo_reqwidth()
-        windowHeight = self.master.winfo_reqheight()
-        positionRight = int(self.master.winfo_screenwidth() / 2 - windowWidth / 2) - 200
-        positionDown = int(self.master.winfo_screenheight() / 2 - windowHeight / 2) - 200
-        self.master.geometry(f'600x450+{positionRight}+{positionDown}')
-        self.master.resizable(0, 0)
-        self.master.protocol("WM_DELETE_WINDOW", self.disable_event)
         self.label_text = tk.StringVar()
         self.label = tk.Label(self.master, textvariable=self.label_text)
         self.entry_text = tk.StringVar()
-        self.entry = tk.Entry(self.master, textvariable=self.entry_text)
+        self.entry = tk.Entry(self.master, textvariable=self.entry_text, show="*")
         self.submit_btn = tk.Button(self.master, text="Check result", command=lambda: self.check_pwd(self.entry_text))
         self.input_sec = 15
-        self.parent_sec = 10
+        self.parent_sec = 3600
         self.pwd_submitted = False
         self.pwd_correct = False
         self.isParent = False
@@ -43,23 +35,37 @@ class MainProgram:
         self.in_use_time = False
         self.pwd_mng = PasswordManager('data.json', 'key.key')
         self.tm = TimeManager('data.json', 'key.key')
+        self.create_main_window()
+
+    def create_main_window(self):
+        self.master.title("Parental Control")
+        windowWidth = self.master.winfo_reqwidth()
+        windowHeight = self.master.winfo_reqheight()
+        positionRight = int(self.master.winfo_screenwidth() / 2 - windowWidth / 2) - 200
+        positionDown = int(self.master.winfo_screenheight() / 2 - windowHeight / 2) - 200
+        self.master.geometry(f'600x450+{positionRight}+{positionDown}')
+        self.master.resizable(0, 0)
+        self.master.protocol("WM_DELETE_WINDOW", self.disable_event)
+
+    def popup(self, text):
+        root_x = self.master.winfo_rootx()
+        root_y = self.master.winfo_rooty()
+        win_x = root_x + 150
+        win_y = root_y + 150
+        win = tk.Toplevel()
+        win.geometry(f'300x50+{win_x}+{win_y}')
+        win.wm_title("Notification")
+        win.resizable(False, False)
+        notification = tk.Label(win, text=text)
+        button_close = tk.Button(win, text='OK', command=win.destroy)
+        notification.pack()
+        button_close.pack()
 
     def disable_event(self):
         if self.isParent:
             os._exit(0)
         else:
-            root_x = self.master.winfo_rootx()
-            root_y = self.master.winfo_rooty()
-            win_x = root_x + 150
-            win_y = root_y + 150
-            win = tk.Toplevel()
-            win.geometry(f'300x50+{win_x}+{win_y}')
-            win.wm_title("Notification")
-            win.resizable(False, False)
-            notification = tk.Label(win, text="Can't exit this program")
-            button_close = tk.Button(win, text='OK', command=win.destroy)
-            notification.pack()
-            button_close.pack()
+            self.popup("Only Parent can exit this program")
 
     def get_pwd(self):
         self.label.pack()
@@ -125,7 +131,6 @@ class MainProgram:
         entry.pack()
         canc_btn.pack()
 
-
     def change_child_pwd_menu(self):
         entry = tk.Entry()
         canc_btn = tk.Button(self.master, text='Cancel',
@@ -160,6 +165,10 @@ class MainProgram:
 
     def parent_gui(self):
         self.option_menu()
+
+    def clear_widgets(self):
+        for widgets in self.master.winfo_children():
+            widgets.forget()
 
     def logic(self):
         if self.tm.in_penalty():
@@ -206,12 +215,8 @@ class MainProgram:
                     self.label_text.set("Logged in as Parent!")
                     self.entry.forget()
                     self.submit_btn.forget()
-                    menu_thread = threading.Thread(target=self.parent_gui, daemon=True)
-                    menu_thread.start()
+                    self.parent_gui()
                     self.count_parent()
-                    for widgets in self.master.winfo_children():
-                        widgets.forget()
-
                 elif not self.tm.in_use_time():
                     self.label_text.set(f'Not yet time to use the machine!\n'
                                         f'{self.tm.cant_use_reason()}')
