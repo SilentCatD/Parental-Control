@@ -22,7 +22,7 @@ class MainProgram:
         self.entry = tk.Entry(self.master, textvariable=self.entry_text)
         self.submit_btn = tk.Button(self.master, text="Check result", command=lambda: self.check_pwd(self.entry_text))
         self.input_sec = 15
-        self.parent_sec = 20
+        self.parent_sec = 10
         self.pwd_submitted = False
         self.pwd_correct = False
         self.isParent = False
@@ -88,6 +88,10 @@ class MainProgram:
         self.label_text.set("Using time is over! Shutting down in 1 minute...")
         time.sleep(60)
 
+    def parent_gui(self):
+        while self.isParent:
+            print(self.parent_sec)
+
     def logic(self):
         if self.tm.in_penalty():
             print("in penalty")
@@ -135,8 +139,11 @@ class MainProgram:
                     self.submit_btn.forget()
                     if not self.isCounting:
                         count_down_thread = threading.Thread(target=self.count_parent, daemon=True)
+                        parent_gui = threading.Thread(target=self.parent_gui, daemon=True)
                         count_down_thread.start()
+                        parent_gui.start()
                         count_down_thread.join()
+
                 elif not self.tm.in_use_time():
                     self.label_text.set(f'Not yet time to use the machine!\n'
                                         f'{self.tm.cant_use_reason()}')
