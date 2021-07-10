@@ -1,3 +1,5 @@
+import time
+
 from DataFileManager import DataFileManager
 import datetime
 
@@ -37,6 +39,10 @@ class TimeManager(DataFileManager):
         return self.data['curr_time_rule']
 
     def save_curr_time_rule(self):
+        timeout = time.time() + 1
+        while self.is_writing():
+            if time.time() > timeout:
+                break
         self.data['curr_time_rule'] = self.curr_time_rule
         self.save_data(self.data)
 
@@ -85,19 +91,6 @@ class TimeManager(DataFileManager):
         self.curr_time_rule = ['' for _ in range(7)]
         self.save_curr_time_rule()
 
-    def get_time_rule_today(self):
-        result = ""
-        now = datetime.datetime.now()
-        curr_day = now.strftime('%a')
-        result += f'{curr_day}:\n'
-        if curr_day in self.data:
-            for time_rule in self.data[curr_day]:
-                store = split_time(time_rule)
-                result += f'{store[0]} - {store[1]}\n'
-        if result == "":
-            result += "Not allowed to use today\n"
-        return result
-
     def get_use_time(self):
         out_duration = False
         now = datetime.datetime.now()
@@ -127,6 +120,19 @@ class TimeManager(DataFileManager):
         else:
             result += f'Total time left: {distance} minute(s)\n'
             result += f'{self.get_time_rule_today()}'
+        return result
+
+    def get_time_rule_today(self):
+        result = ""
+        now = datetime.datetime.now()
+        curr_day = now.strftime('%a')
+        result += f'{curr_day}:\n'
+        if len(self.data[curr_day]) != 0:
+            for time_rule in self.data[curr_day]:
+                store = split_time(time_rule)
+                result += f'{store[0]} - {store[1]}\n'
+        else:
+            result += "Not allowed to use today\n"
         return result
 
     def cant_use_reason(self):

@@ -67,5 +67,41 @@ class DataFileManager:
             json.dump(data, file, indent=4)
         self.encrypt()
 
-# DataFileManager('data.json', 'key.key').decrypt()
-# DataFileManager('data.json', 'key.key').encrypt()
+    def is_editing(self):
+        data = self.get_data()
+        return data['isEditing']
+
+    def switch_editing(self, flag):
+        '''
+        for parent
+
+        '''
+        data = self.get_data()
+        data['isEditing'] = flag
+        self.save_data(data)
+
+    def is_writing(self):
+        '''
+        for children
+
+        '''
+        data = self.get_data()
+        return data['isWriting']
+
+    def switch_writing(self, flag):
+        data = self.get_data()
+        data['isWriting'] = flag
+        self.save_data(data)
+
+    def need_update(self):
+        data = self.get_data()
+        return data['newVersion']
+
+    def switch_need_update(self, flag):
+        data = self.get_data()
+        data['newVersion'] = flag
+        self.save_data(data)
+
+
+#DataFileManager('data.json', 'key.key').decrypt()
+#DataFileManager('data.json', 'key.key').encrypt()
