@@ -5,6 +5,7 @@ import time
 from PasswordManager import PasswordManager
 from Logger import Logger
 from TimeManager import TimeManager
+import os
 
 lock = threading.Lock()
 
@@ -44,18 +45,21 @@ class MainProgram:
         self.tm = TimeManager('data.json', 'key.key')
 
     def disable_event(self):
-        root_x = self.master.winfo_rootx()
-        root_y = self.master.winfo_rooty()
-        win_x = root_x + 150
-        win_y = root_y + 150
-        win = tk.Toplevel()
-        win.geometry(f'300x50+{win_x}+{win_y}')
-        win.wm_title("Notification")
-        win.resizable(False, False)
-        notification = tk.Label(win, text="Can't exit this program")
-        button_close = tk.Button(win, text='OK', command=win.destroy)
-        notification.pack()
-        button_close.pack()
+        if self.isParent:
+            os._exit(0)
+        else:
+            root_x = self.master.winfo_rootx()
+            root_y = self.master.winfo_rooty()
+            win_x = root_x + 150
+            win_y = root_y + 150
+            win = tk.Toplevel()
+            win.geometry(f'300x50+{win_x}+{win_y}')
+            win.wm_title("Notification")
+            win.resizable(False, False)
+            notification = tk.Label(win, text="Can't exit this program")
+            button_close = tk.Button(win, text='OK', command=win.destroy)
+            notification.pack()
+            button_close.pack()
 
     def get_pwd(self):
         self.label.pack()
@@ -160,12 +164,12 @@ class MainProgram:
                     self.label_text.set("Logged in as Parent!")
                     self.entry.forget()
                     self.submit_btn.forget()
-                    if not self.isCounting:
-                        count_down_thread = threading.Thread(target=self.count_parent, daemon=True)
-                        parent_gui = threading.Thread(target=self.parent_gui, daemon=True)
-                        parent_gui.start()
-                        count_down_thread.start()
-                        count_down_thread.join()
+                    lock.acquire()
+                    time.sleep(3)
+                    lock.release()
+                    count_down_thread = threading.Thread(target=self.count_parent, daemon=True)
+                    count_down_thread.start()
+                    self.parent_gui()
 
                 elif not self.tm.in_use_time():
                     self.label_text.set(f'Not yet time to use the machine!\n'
