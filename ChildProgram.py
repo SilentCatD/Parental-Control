@@ -5,6 +5,7 @@ import time
 from PasswordManager import PasswordManager
 from Logger import Logger
 from TimeManager import TimeManager
+
 lock = threading.Lock()
 
 
@@ -16,6 +17,14 @@ def shutdown():
 class MainProgram:
     def __init__(self, master):
         self.master = master
+        self.master.title("Parental Control")
+        windowWidth = self.master.winfo_reqwidth()
+        windowHeight = self.master.winfo_reqheight()
+        positionRight = int(self.master.winfo_screenwidth() / 2 - windowWidth / 2) - 200
+        positionDown = int(self.master.winfo_screenheight() / 2 - windowHeight / 2) - 200
+        self.master.geometry(f'600x450+{positionRight}+{positionDown}')
+        self.master.resizable(0, 0)
+        self.master.protocol("WM_DELETE_WINDOW", self.disable_event)
         self.label_text = tk.StringVar()
         self.label = tk.Label(self.master, textvariable=self.label_text)
         self.entry_text = tk.StringVar()
@@ -33,6 +42,20 @@ class MainProgram:
         self.in_use_time = False
         self.pwd_mng = PasswordManager('data.json', 'key.key')
         self.tm = TimeManager('data.json', 'key.key')
+
+    def disable_event(self):
+        root_x = self.master.winfo_rootx()
+        root_y = self.master.winfo_rooty()
+        win_x = root_x + 150
+        win_y = root_y + 150
+        win = tk.Toplevel()
+        win.geometry(f'300x50+{win_x}+{win_y}')
+        win.wm_title("Notification")
+        win.resizable(False, False)
+        l = tk.Label(win, text="Can't exit this program")
+        button_close = tk.Button(win, text='OK', command=win.destroy)
+        l.pack()
+        button_close.pack()
 
     def get_pwd(self):
         self.label.pack()
@@ -140,8 +163,8 @@ class MainProgram:
                     if not self.isCounting:
                         count_down_thread = threading.Thread(target=self.count_parent, daemon=True)
                         parent_gui = threading.Thread(target=self.parent_gui, daemon=True)
-                        count_down_thread.start()
                         parent_gui.start()
+                        count_down_thread.start()
                         count_down_thread.join()
 
                 elif not self.tm.in_use_time():
