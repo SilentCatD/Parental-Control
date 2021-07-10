@@ -83,6 +83,7 @@ class MainProgram:
         lock.release()
 
     def count_parent(self):
+        print("parent thread started")
         lock.acquire()
         temp = self.parent_sec
         self.isCounting = True
@@ -115,9 +116,50 @@ class MainProgram:
         self.label_text.set("Using time is over! Shutting down in 1 minute...")
         time.sleep(60)
 
+    def change_parent_pwd_menu(self):
+        entry = tk.Entry()
+        canc_btn = tk.Button(self.master, text='Cancel',
+                             command=lambda: [self.option_menu(),
+                                              canc_btn.pack_forget(),
+                                              entry.pack_forget()])
+        entry.pack()
+        canc_btn.pack()
+
+
+    def change_child_pwd_menu(self):
+        entry = tk.Entry()
+        canc_btn = tk.Button(self.master, text='Cancel',
+                             command=lambda: [self.option_menu(),
+                                              canc_btn.pack_forget(),
+                                              entry.pack_forget()])
+        entry.pack()
+        canc_btn.pack()
+
+    def edit_time_rule_menu(self):
+        print('edit time rule')
+
+    def option_menu(self):
+        change_parent_pwd = tk.Button(self.master, text='Change parent password',
+                                      command=lambda: [self.change_parent_pwd_menu(),
+                                                       change_parent_pwd.pack_forget(),
+                                                       change_child_pwd.pack_forget(),
+                                                       edit_time_rule.pack_forget()])
+        change_child_pwd = tk.Button(self.master, text='Change child password',
+                                     command=lambda: [self.change_child_pwd_menu(),
+                                                      change_parent_pwd.pack_forget(),
+                                                      change_child_pwd.pack_forget(),
+                                                      edit_time_rule.pack_forget()])
+        edit_time_rule = tk.Button(self.master, text='Edit time rule',
+                                   command=lambda: [self.edit_time_rule_menu(),
+                                                    change_parent_pwd.pack_forget(),
+                                                    change_child_pwd.pack_forget(),
+                                                    edit_time_rule.pack_forget()])
+        change_parent_pwd.pack()
+        change_child_pwd.pack()
+        edit_time_rule.pack()
+
     def parent_gui(self):
-        while self.isParent:
-            print(self.parent_sec)
+        self.option_menu()
 
     def logic(self):
         if self.tm.in_penalty():
@@ -164,12 +206,11 @@ class MainProgram:
                     self.label_text.set("Logged in as Parent!")
                     self.entry.forget()
                     self.submit_btn.forget()
-                    lock.acquire()
-                    time.sleep(3)
-                    lock.release()
-                    count_down_thread = threading.Thread(target=self.count_parent, daemon=True)
-                    count_down_thread.start()
-                    self.parent_gui()
+                    menu_thread = threading.Thread(target=self.parent_gui, daemon=True)
+                    menu_thread.start()
+                    self.count_parent()
+                    for widgets in self.master.winfo_children():
+                        widgets.forget()
 
                 elif not self.tm.in_use_time():
                     self.label_text.set(f'Not yet time to use the machine!\n'

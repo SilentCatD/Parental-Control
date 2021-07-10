@@ -248,3 +248,4 @@ def EditEveryDay():
 if __name__ == '__main__':
     main_menu()
 mainloop()
+print(fake_data)
