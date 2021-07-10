@@ -52,9 +52,9 @@ class MainProgram:
         win.geometry(f'300x50+{win_x}+{win_y}')
         win.wm_title("Notification")
         win.resizable(False, False)
-        l = tk.Label(win, text="Can't exit this program")
+        notification = tk.Label(win, text="Can't exit this program")
         button_close = tk.Button(win, text='OK', command=win.destroy)
-        l.pack()
+        notification.pack()
         button_close.pack()
 
     def get_pwd(self):
