@@ -283,8 +283,7 @@ class MainProgram:
                 store = self.tm.split_time(time_rule)
                 start_this = datetime.datetime.strptime(store[0], '%H:%M')
                 end_this = datetime.datetime.strptime(store[1], '%H:%M')
-                delta = min(end_this, end_base) - max(start_this, start_base)
-                if delta.seconds / 60 > 0:
+                if min(end_this, end_base) > max(start_this, start_base):
                     self.popup("Time overlap! Try a different time rule")
                     self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
                     return False
