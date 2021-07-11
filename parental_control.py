@@ -8,6 +8,7 @@ from Logger import Logger
 from TimeManager import TimeManager
 import os
 from DataFileManager import DataFileManager
+from playsound import playsound
 
 lock = threading.Lock()
 
@@ -132,6 +133,7 @@ class MainProgram:
                 sec = 60
                 self.tm.update_curr_time_rule()
         self.label_text.set("Using time is over! Shutting down in 1 minute...")
+        playsound('using_time_over.mp3')
         time.sleep(60)
         logger.end()
         self.shutdown()
@@ -517,13 +519,13 @@ class MainProgram:
 
     def clear_widgets(self):
         for widgets in self.master.winfo_children():
-            widgets.destroy()
+            widgets.place_forget()
 
     def logic(self):
         if self.tm.in_penalty():
-            print("in penalty")
             self.label_text.set(f'In penalty time, shutting down...\nCome back after {self.tm.get_penalty()}')
             self.label.pack()
+            playsound('in_penalty.mp3')
             lock.acquire()
             time.sleep(5)
             lock.release()
@@ -542,6 +544,7 @@ class MainProgram:
                                         f'left')
                     self.entry.forget()
                     self.submit_btn.forget()
+                    playsound('wrong_password.mp3')
                     lock.acquire()
                     time.sleep(1)
                     lock.release()
@@ -555,15 +558,19 @@ class MainProgram:
                     self.label_text.set("Login failed! Shutting down...")
                     self.entry.forget()
                     self.submit_btn.forget()
-                    time.sleep(3)
+                    playsound('login_failed.mp3')
+
+                    time.sleep(5)
                     self.shutdown()
 
             else:
                 self.current_attempt = 0
                 if self.isParent:
+                    self.tm.remove_penalty()
                     self.label_text.set("Logged in as Parent!")
                     self.entry.forget()
                     self.submit_btn.forget()
+                    playsound('login_as_parent.mp3')
                     self.parent_gui()
                     self.count_parent()
                     self.clear_widgets()
@@ -572,9 +579,10 @@ class MainProgram:
                                         f'{self.tm.cant_use_reason()}')
                     self.entry.forget()
                     self.submit_btn.forget()
+                    playsound('not_yet_time.mp3')
                     self.pwd_correct = False
                     lock.acquire()
-                    time.sleep(5)
+                    time.sleep(2)
                     lock.release()
                     self.clear_widgets()
 
@@ -582,6 +590,7 @@ class MainProgram:
                     self.label_text.set("Logged in as child!")
                     self.entry.forget()
                     self.submit_btn.forget()
+                    playsound('login_as_child.mp3')
                     lock.acquire()
                     time.sleep(2)
                     lock.release()

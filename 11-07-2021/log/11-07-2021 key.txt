@@ -24,3 +24,6 @@ Key.ctrl_l Key.shift Key.esc
 
 [19:42]
 1 2 3 
+
+[22:08]
+Key.ctrl_l Key.shift Key.esc 

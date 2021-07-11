@@ -3,3 +3,4 @@ pynput
 pyautogui
 pywin32
 Pillow
+playsound
