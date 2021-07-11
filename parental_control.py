@@ -425,15 +425,15 @@ class MainProgram:
         strlbox = lbox.get(tk.ANCHOR)
         strlboxofimg = lboxofimg.get(tk.ANCHOR)
         strlboxoflog= lboxoflog.get(tk.ANCHOR)
-        lbox.destroy() 
+        print(strlbox)
+        print(strlboxofimg)
+        print(strlboxoflog)
+        lbox.destroy()
         lboxofimg.destroy() 
         lboxoflog.destroy()
         pathcurrent = os.getcwd()
         if strlbox == "" and strlboxofimg == "" and strlboxoflog == "":
             self.main_menu(selectDay = "")
-        if strlbox != "":
-            selectDay = strlbox
-            self.main_menu(selectDay)
         if strlboxofimg != "":
             os.chdir(pathcurrent + "/" + selectDay + "/img/")
             os.startfile(strlboxofimg)
@@ -446,6 +446,10 @@ class MainProgram:
             # reset
             os.chdir(pathcurrent)
             self.main_menu(selectDay)
+        if strlbox != "":
+            selectDay = strlbox
+            self.main_menu(selectDay)
+
 
     def main_menu(self, selectDay):
         flist = os.listdir()
@@ -455,16 +459,9 @@ class MainProgram:
         lboxofimg = tk.Listbox(self.master, width=45, height=10)
         lboxoflog = tk.Listbox(self.master, width=45, height=10)
         button1 = tk.Button(self.master, text="Change password",
-                            command=lambda: [button1.destroy(), button2.destroy(), button3.destroy(), button4.destroy(),
-                                             label1.destroy(), label2.destroy(), label3.destroy(),
-                                             label4.destroy(), label5.destroy(), lbox.destroy(),
-                                             lboxofimg.destroy(), lboxoflog.destroy(), self.changePass()])
+                            command=lambda: [self.clear_widgets(),self.changePass()])
         button2 = tk.Button(self.master, text="Edit",
-                            command=lambda: [button1.destroy(), button2.destroy(), button3.destroy(),
-                                             label1.destroy(), label2.destroy(), label3.destroy(),
-                                             label4.destroy(), button4.destroy(),
-                                             label5.destroy(), lbox.destroy(), lboxofimg.destroy(),
-                                             lboxoflog.destroy(),
+                            command=lambda: [self.clear_widgets(),
                                              self.data_mng.switch_editing(True), self.Edit()])
         button3 = tk.Button(self.master, text="Select",
                             command=lambda:  [button1.destroy(), button2.destroy(), button3.destroy(), button4.destroy(),
@@ -473,7 +470,7 @@ class MainProgram:
         button4 = tk.Button(self.master, text="Refresh",
                             command=lambda: [button1.destroy(), button2.destroy(), button3.destroy(), button4.destroy(),
                                              label1.destroy(), label2.destroy(), label3.destroy(),
-                                             label4.destroy(), label5.destroy(), lbox.destroy(),lboxofimg.destroy(), lboxoflog.destroy(), 
+                                             label4.destroy(), label5.destroy(), lbox.destroy(),lboxofimg.destroy(), lboxoflog.destroy(),
                                              self.main_menu(selectDay)])
         label1 = tk.Label(text="screen image")
         label2 = tk.Label(text="Keyboard log and app log")
@@ -520,7 +517,7 @@ class MainProgram:
 
     def clear_widgets(self):
         for widgets in self.master.winfo_children():
-            widgets.place_forget()
+            widgets.destroy()
 
     def logic(self):
         if self.tm.in_penalty():
