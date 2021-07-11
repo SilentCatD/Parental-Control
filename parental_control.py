@@ -425,10 +425,13 @@ class MainProgram:
         strlbox = lbox.get(tk.ANCHOR)
         strlboxofimg = lboxofimg.get(tk.ANCHOR)
         strlboxoflog= lboxoflog.get(tk.ANCHOR)
+        print(strlbox,strlboxofimg,strlboxoflog)
         lbox.place_forget() 
         lboxofimg.place_forget() 
         lboxoflog.place_forget()
         pathcurrent = os.getcwd()
+        if strlbox == "" and strlboxofimg == "" and strlboxoflog == "":
+            self.main_menu(selectDay = "")
         if strlbox != "":
             selectDay = strlbox
             self.main_menu(selectDay)
@@ -453,16 +456,16 @@ class MainProgram:
         lboxofimg = tk.Listbox(self.master, width=45, height=10)
         lboxoflog = tk.Listbox(self.master, width=45, height=10)
         button1 = tk.Button(self.master, text="Change password",
-                            command=lambda: [button1.place_forget(), button2.place_forget(), button3.place_forget(),
-                                             label1.place_forget(), label2.place_forget(), label3.place_forget(),
-                                             label4.place_forget(), label5.place_forget(), lbox.place_forget(),
-                                             lboxofimg.place_forget(), lboxoflog.place_forget(), self.changePass()])
+                            command=lambda: [button1.destroy(), button2.destroy(), button3.destroy(),
+                                             label1.destroy(), label2.destroy(), label3.destroy(),
+                                             label4.destroy(), label5.destroy(), lbox.destroy(),
+                                             lboxofimg.destroy(), lboxoflog.destroy(), self.changePass()])
         button2 = tk.Button(self.master, text="Edit",
-                            command=lambda: [button1.place_forget(), button2.place_forget(), button3.place_forget(),
-                                             label1.place_forget(), label2.place_forget(), label3.place_forget(),
-                                             label4.place_forget(),
-                                             label5.place_forget(), lbox.place_forget(), lboxofimg.place_forget(),
-                                             lboxoflog.place_forget(),
+                            command=lambda: [button1.destroy(), button2.destroy(), button3.destroy(),
+                                             label1.destroy(), label2.destroy(), label3.destroy(),
+                                             label4.destroy(),
+                                             label5.destroy(), lbox.destroy(), lboxofimg.destroy(),
+                                             lboxoflog.destroy(),
                                              self.data_mng.switch_editing(True), self.Edit()])
         button3 = tk.Button(self.master, text="Select",
                             command=lambda:  [button1.place_forget(), button2.place_forget(), button3.place_forget(),
