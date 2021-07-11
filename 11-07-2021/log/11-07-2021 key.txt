@@ -1,0 +1,14 @@
+
+
+[19:20]
+Key.ctrl_l Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.cmd Key.cmd p y Key.space Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift p a Key.tab Key.enter 1 2 
+
+[19:21]
+3 
+
+[19:21]
+z z z z z z 
+
+[19:22]
+Key.ctrl_l Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift Key.shift
+Key.shift Key.shift Key.shift Key.shift Key.shift Key.ctrl_l Key.shift Key.esc 
