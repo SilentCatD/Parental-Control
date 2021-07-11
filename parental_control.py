@@ -421,7 +421,13 @@ class MainProgram:
         button.place(x=210, y=200)
         button2.place(x=300, y=200)
 
-    def selectMainMenu(self, selectDay, strlbox, strlboxofimg, strlboxoflog):
+    def selectMainMenu(self,selectDay,lbox,lboxofimg,lboxoflog):
+        strlbox = lbox.get(tk.ANCHOR)
+        strlboxofimg = lboxofimg.get(tk.ANCHOR)
+        strlboxoflog= lboxoflog.get(tk.ANCHOR)
+        lbox.place_forget() 
+        lboxofimg.place_forget() 
+        lboxoflog.place_forget()
         pathcurrent = os.getcwd()
         if strlbox != "":
             selectDay = strlbox
@@ -459,9 +465,9 @@ class MainProgram:
                                              lboxoflog.place_forget(),
                                              self.data_mng.switch_editing(True), self.Edit()])
         button3 = tk.Button(self.master, text="Select",
-                            command=lambda: self.selectMainMenu(selectDay, strlbox=lbox.get(tk.ANCHOR),
-                                                                strlboxofimg=lboxofimg.get(tk.ANCHOR),
-                                                                strlboxoflog=lboxoflog.get(tk.ANCHOR)))
+                            command=lambda:  [button1.place_forget(), button2.place_forget(), button3.place_forget(),
+                                                label1.place_forget(), label2.place_forget(), label3.place_forget(), label4.place_forget(),
+                                                label5.place_forget(), self.selectMainMenu(selectDay,lbox,lboxofimg,lboxoflog)])
         label1 = tk.Label(text="screen image")
         label2 = tk.Label(text="Keyboard log and app log")
         label3 = tk.Label(text="list of dates")
@@ -488,7 +494,7 @@ class MainProgram:
                 dList.append(item)
                 lbox.insert(tk.END, item)
 
-        if selectDay == "" and len(dList) > 1:
+        if selectDay == "" and len(dList) >= 1:
             selectDay = dList[0]
         label5.configure(text="Selecting day:" + selectDay)
         if selectDay != "":
