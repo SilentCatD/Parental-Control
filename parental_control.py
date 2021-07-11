@@ -505,7 +505,6 @@ class MainProgram:
         self.main_menu(selectDay="")
 
     def clear_widgets(self):
-        print("clearing widget")
         for widgets in self.master.winfo_children():
             widgets.place_forget()
 

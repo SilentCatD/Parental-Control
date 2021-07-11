@@ -23,3 +23,34 @@
 [19:22] Notification
 [19:22] Parental Control
 [19:22] Task Manager
+[19:29] Parental Control
+[19:29] Parental Control
+[19:29] TestingArea – parental_control.py
+[19:29] Parental Control
+[19:30] Photos
+[19:30] Parental Control
+[19:30] Photos
+[19:31] Parental Control
+[19:31] Photos
+[19:31] Parental Control
+[19:31] Photos
+[19:31] Parental Control
+[19:31] Photos
+[19:31] Parental Control
+[19:31] Photos
+[19:31] Parental Control
+[19:31] Photos
+[19:31] Parental Control
+[19:31] TestingArea – parental_control.py
+[19:31] Parental Control
+[19:32] TestingArea – parental_control.py
+[19:32] Parental Control
+[19:32] TestingArea – parental_control.py
+[19:32] Parental Control
+[19:32] Parental Control
+[19:32] Parental Control
+[19:33] Notification
+[19:33] Parental Control
+[19:33] Task Manager
+[19:41] Parental Control
+[19:42] Parental Control
