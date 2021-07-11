@@ -372,7 +372,7 @@ class MainProgram:
     
         if selectDay == "" and len(dList) > 1: 
             selectDay = dList[0]
-            label5.configure(text = "Selecting day:" + selectDay)
+        label5.configure(text = "Selecting day:" + selectDay)
         if selectDay != "":
             ListOfimg = os.listdir(selectDay + "/img/")
             ListOflog = os.listdir(selectDay + "/log/")
