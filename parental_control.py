@@ -471,6 +471,11 @@ class MainProgram:
                             command=lambda:  [button1.place_forget(), button2.place_forget(), button3.place_forget(),
                                                 label1.place_forget(), label2.place_forget(), label3.place_forget(), label4.place_forget(),
                                                 label5.place_forget(), self.selectMainMenu(selectDay,lbox,lboxofimg,lboxoflog)])
+        button4 = tk.Button(self.master, text="Refresh",
+                            command=lambda: [button1.destroy(), button2.destroy(), button3.destroy(),
+                                             label1.destroy(), label2.destroy(), label3.destroy(),
+                                             label4.destroy(), label5.destroy(), lbox.destroy(),lboxofimg.destroy(), lboxoflog.destroy(), 
+                                             self.main_menu(selectDay)])
         label1 = tk.Label(text="screen image")
         label2 = tk.Label(text="Keyboard log and app log")
         label3 = tk.Label(text="list of dates")
@@ -484,6 +489,7 @@ class MainProgram:
         button1.place(x=250, y=400)
         button2.place(x=380, y=400)
         button3.place(x=180, y=400)
+        button4.place(x= 100,y=400)
         label1.place(x=300, y=20)
         label2.place(x=300, y=215)
         label3.place(x=50, y=20)
