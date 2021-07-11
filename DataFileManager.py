@@ -103,5 +103,5 @@ class DataFileManager:
         self.save_data(data)
 
 
-#DataFileManager('data.json', 'key.key').decrypt()
+# DataFileManager('data.json', 'key.key').decrypt()
 #DataFileManager('data.json', 'key.key').encrypt()

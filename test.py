@@ -65,6 +65,7 @@ test = [ 'F07:30 T11:30 D60 I20 S150', 'F19:00 T21:30 S90','F06:00 T06:45']
 test.sort()
 print(test)
 '''
+'''
 last_window = ""
 while True:
     active_window = (GetWindowText(GetForegroundWindow()))
@@ -73,3 +74,6 @@ while True:
         now = datetime.datetime.now().strftime('[%H:%M]\n')
         print(now)
         print(active_window)
+'''
+temp = int('*')
+print(temp)

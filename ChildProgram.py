@@ -1,3 +1,4 @@
+import datetime
 import tkinter as tk
 import threading
 import subprocess
@@ -138,12 +139,13 @@ class MainProgram:
     def changeParentPass(self):
         label1 = tk.Label(text="Password")
         entry1 = tk.Entry()
-        button1 = tk.Button(self.master, text="Confirm", command=lambda: [self.data_mng.switch_writing(True),
-                                                                          self.pwd_mng.change_pwd(entry1.get(),
-                                                                                                  parent=True),
-                                                                          self.data_mng.switch_writing(False),
-                                                                          self.popup("Parent Password Changed!"),
-                                                                          self.data_mng.switch_need_update(True)])
+        button1 = tk.Button(self.master, text="Confirm",
+                            command=lambda: [self.duplicate_pass(entry1.get(), parent=True),
+                                             label1.place_forget(),
+                                             entry1.place_forget(),
+                                             button1.place_forget(),
+                                             button2.place_forget(),
+                                             self.changePass()])
         button2 = tk.Button(self.master, text="Cancel",
                             command=lambda: [label1.place_forget(), entry1.place_forget(), button1.place_forget(),
                                              button2.place_forget(), self.changePass()])
@@ -152,15 +154,37 @@ class MainProgram:
         button1.place(x=210, y=300)
         button2.place(x=350, y=300)
 
+    def duplicate_pass(self, new_pwd, child=False, parent=False):
+        self.pwd_mng.update_data()
+        if child:
+            if self.pwd_mng.compare_pwd(new_pwd)[0]:
+                self.popup("Can't have the same password of parent!")
+            else:
+                self.data_mng.switch_writing(True)
+                self.pwd_mng.change_pwd(new_pwd, child=True)
+                self.data_mng.switch_writing(False)
+                self.popup("Child Password Changed!")
+                self.data_mng.switch_need_update(True)
+
+        if parent:
+            if self.pwd_mng.compare_pwd(new_pwd)[1]:
+                self.popup("Can't have the same password of child!")
+            else:
+                self.data_mng.switch_writing(True)
+                self.pwd_mng.change_pwd(new_pwd, parent=True)
+                self.data_mng.switch_writing(False)
+                self.popup("Parent Password Changed!")
+                self.data_mng.switch_need_update(True)
+
     def changeChildPass(self):
         label1 = tk.Label(text="Password")
         entry1 = tk.Entry()
-        button1 = tk.Button(self.master, text="Confirm", command=lambda: [self.data_mng.switch_writing(True),
-                                                                          self.pwd_mng.change_pwd(entry1.get(),
-                                                                                                  child=True),
-                                                                          self.data_mng.switch_writing(False),
-                                                                          self.popup("Child Password Changed!"),
-                                                                          self.data_mng.switch_need_update(True)])
+        button1 = tk.Button(self.master, text="Confirm", command=lambda: [self.duplicate_pass(entry1.get(), child=True),
+                                                                          label1.place_forget(),
+                                                                          entry1.place_forget(),
+                                                                          button1.place_forget(),
+                                                                          button2.place_forget(),
+                                                                          self.changePass()])
         button2 = tk.Button(self.master, text="Cancel",
                             command=lambda: [label1.place_forget(), entry1.place_forget(), button1.place_forget(),
                                              button2.place_forget(), self.changePass()])
@@ -178,7 +202,7 @@ class MainProgram:
                                              self.changeChildPass()])
         button3 = tk.Button(self.master, text="Cancel",
                             command=lambda: [button1.place_forget(), button2.place_forget(), button3.place_forget(),
-                                             self.main_menu()])
+                                             self.main_menu(selectDay="")])
         button1.place(x=200, y=200)
         button2.place(x=275, y=200)
         button3.place(x=350, y=200)
@@ -200,28 +224,114 @@ class MainProgram:
         button2.place(x=275, y=200)
         button3.place(x=350, y=200)
 
+    def clear_addTime(self, entry1, entry2, entry3, entry4, entry5):
+        entry1.delete(0, 'end')
+        entry2.delete(0, 'end')
+        entry3.delete(0, 'end')
+        entry4.delete(0, 'end')
+        entry5.delete(0, 'end')
+
     def addTime(self, my_listbox, selectDay, entry1, entry2, entry3, entry4, entry5):
         string = ""
-        if entry1.get() != "":
-            string += "F" + entry1.get() + " "
-        if entry2.get() != "":
-            string += "T" + entry2.get() + " "
-        if entry3.get() != "":
-            string += "D" + entry3.get() + " "
-        if entry4.get() != "":
-            string += "I" + entry4.get() + " "
-        if entry5.get() != "":
-            string += "S" + entry5.get()
-        if string != "":
-            # to DO
-            self.data[selectDay].append(string)
-            self.data[selectDay].sort()
-            # ------------------
-            self.data_mng.switch_writing(True)
-            self.data_mng.save_data(self.data)
-            self.data_mng.switch_writing(False)
-            self.data_mng.switch_need_update(True)
-            my_listbox.insert(tk.END, string)
+        temp = ""
+        # entry 1
+        temp = entry1.get()
+        temp = temp.replace(" ", "")
+        if temp == "":
+            self.popup("'From' entry can't be empty!")
+            self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+            return False
+        try:
+            time_from = datetime.datetime.strptime(temp, '%H:%M')
+            string += "F" + time_from.strftime('%H:%M') + " "
+        except ValueError:
+            self.popup("'From' entry invalid! Must be 'Hour:Minute'")
+            self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+            return False
+
+        # entry 2
+        temp = entry2.get()
+        temp = temp.replace(" ", "")
+        if temp == "":
+            self.popup("'To' entry can't be empty!")
+            self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+            return False
+        try:
+            now = datetime.datetime.now()
+            time_from = datetime.datetime.strptime(entry1.get().replace(" ", ""), '%H:%M')
+            time_to = datetime.datetime.strptime(temp, '%H:%M')
+            time_from = time_from.replace(day=now.day, month=now.month, year=now.year)
+            time_to = time_to.replace(day=now.day, month=now.month, year=now.year)
+            next_day = now + datetime.timedelta(days=1)
+            next_day = next_day.replace(hour=0, minute=0)
+            if not time_from < time_to < next_day:
+                self.popup("'From' to 'To' must be in a day")
+                self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+                return False
+            string += "T" + time_to.strftime('%H:%M')
+        except ValueError:
+            self.popup("'To' entry invalid! Must be 'Hour:Minute'")
+            self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+            return False
+
+        # Check overlap
+        print(self.data[selectDay])
+        if len(self.data[selectDay]) != 0:
+            start_base = datetime.datetime.strptime(entry1.get().replace(" ", ""), '%H:%M')
+            end_base = datetime.datetime.strptime(entry2.get().replace(" ", ""), '%H:%M')
+            for time_rule in self.data[selectDay]:
+                store = self.tm.split_time(time_rule)
+                start_this = datetime.datetime.strptime(store[0], '%H:%M')
+                end_this = datetime.datetime.strptime(store[1], '%H:%M')
+                delta = min(end_this, end_base) - max(start_this, start_base)
+                if delta.seconds / 60 > 0:
+                    self.popup("Time overlap! Try a different time rule")
+                    self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+                    return False
+        # entry 3
+        temp = entry3.get()
+        temp = temp.replace(" ", "")
+        if temp != "":
+            try:
+                num = int(temp)
+            except ValueError:
+                self.popup("Duration must be a number!")
+                self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+                return False
+            string += " D" + temp
+        # entry 4
+        temp = entry4.get()
+        temp = temp.replace(" ", "")
+        if temp != "":
+            try:
+                num = int(temp)
+            except ValueError:
+                self.popup("Interrupt must be a number!")
+                self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+                return False
+            string += " I" + temp
+
+        # entry 5
+        temp = entry5.get()
+        temp = temp.replace(" ", "")
+        if temp != "":
+            try:
+                num = int(temp)
+            except ValueError:
+                self.popup("Interrupt must be a number!")
+                self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
+                return False
+            string += " S" + temp
+
+        self.data[selectDay].append(string)
+        self.data[selectDay].sort()
+        self.data_mng.switch_writing(True)
+        self.data_mng.save_data(self.data)
+        self.data_mng.switch_writing(False)
+        self.data_mng.switch_need_update(True)
+        my_listbox.insert(tk.END, string)
+        self.popup("Time rule Added!")
+        self.clear_addTime(entry1, entry2, entry3, entry4, entry5)
 
     def add(self, my_listbox, selectDay):
         label1 = tk.Label(text="From")
@@ -271,6 +381,7 @@ class MainProgram:
             my_listbox.delete(tk.ANCHOR)
             self.data[selectDay].remove(selectDel)
             # ---------------------------
+            self.popup("Time rule removed")
             self.data_mng.save_data(self.data)
             self.data_mng.switch_need_update(True)
 
@@ -306,26 +417,98 @@ class MainProgram:
                                             my_listbox.place_forget()])
         button2 = tk.Button(self.master, text="Cancel",
                             command=lambda: [my_listbox.place_forget(), button.place_forget(),
-                                             button2.place_forget(), self.main_menu(),
+                                             button2.place_forget(), self.main_menu(selectDay=""),
                                              self.data_mng.switch_editing(False)])
         button.place(x=210, y=200)
         button2.place(x=300, y=200)
 
-    def main_menu(self):
+    def selectMainMenu(self, selectDay, strlbox, strlboxofimg, strlboxoflog):
+        pathcurrent = os.getcwd()
+        if strlbox != "":
+            selectDay = strlbox
+            self.main_menu(selectDay)
+        if strlboxofimg != "":
+            os.chdir(pathcurrent + "/" + selectDay + "/img/")
+            os.startfile(strlboxofimg)
+            # reset
+            os.chdir(pathcurrent)
+            self.main_menu(selectDay)
+        if strlboxoflog != "":
+            os.chdir(pathcurrent + "/" + selectDay + "/log/")
+            os.startfile(strlboxoflog)
+            # reset
+            os.chdir(pathcurrent)
+            self.main_menu(selectDay)
+
+    def main_menu(self, selectDay):
+        flist = os.listdir()
+        ListOfimg = os.listdir()
+        ListOflog = os.listdir()
+        lbox = tk.Listbox(self.master, width=30, height=10)
+        lboxofimg = tk.Listbox(self.master, width=45, height=10)
+        lboxoflog = tk.Listbox(self.master, width=45, height=10)
         button1 = tk.Button(self.master, text="Change password",
-                            command=lambda: [button1.place_forget(), button2.place_forget(), self.changePass()])
+                            command=lambda: [button1.place_forget(), button2.place_forget(), button3.place_forget(),
+                                             label1.place_forget(), label2.place_forget(), label3.place_forget(),
+                                             label4.place_forget(), label5.place_forget(), lbox.place_forget(),
+                                             lboxofimg.place_forget(), lboxoflog.place_forget(), self.changePass()])
         button2 = tk.Button(self.master, text="Edit",
-                            command=lambda: [button1.place_forget(), button2.place_forget(),
-                                             self.Edit(), self.data_mng.switch_editing(True)])
-        button1.place(x=210, y=350)
-        button2.place(x=350, y=350)
+                            command=lambda: [button1.place_forget(), button2.place_forget(), button3.place_forget(),
+                                             label1.place_forget(), label2.place_forget(), label3.place_forget(),
+                                             label4.place_forget(),
+                                             label5.place_forget(), lbox.place_forget(), lboxofimg.place_forget(),
+                                             lboxoflog.place_forget(),
+                                             self.data_mng.switch_editing(True), self.Edit()])
+        button3 = tk.Button(self.master, text="Select",
+                            command=lambda: self.selectMainMenu(selectDay, strlbox=lbox.get(tk.ANCHOR),
+                                                                strlboxofimg=lboxofimg.get(tk.ANCHOR),
+                                                                strlboxoflog=lboxoflog.get(tk.ANCHOR)))
+        label1 = tk.Label(text="screen image")
+        label2 = tk.Label(text="Keyboard log and app log")
+        label3 = tk.Label(text="list of dates")
+        label4 = tk.Label(
+            text="ABOUS US \n 19127373 - Hồ Văn Duy \n 19127519 - Nguyễn Ngọc Phước\n 19127369 - Lê Minh Đức \n "
+                 "19127384 - Nguyễn Trường Giang \n 19127385 - Phạm Lê Hạ")
+        label5 = tk.Label(text="Selecting day:")
+        lbox.place(x=50, y=40)
+        lboxofimg.place(x=300, y=40)
+        lboxoflog.place(x=300, y=235)
+        button1.place(x=250, y=400)
+        button2.place(x=380, y=400)
+        button3.place(x=180, y=400)
+        label1.place(x=300, y=20)
+        label2.place(x=300, y=215)
+        label3.place(x=50, y=20)
+        label4.place(x=50, y=270)
+        label5.place(x=50, y=210)
+        dList = []
+
+        flist.sort(reverse=True)
+        for item in flist:
+            if len(item) > 6 and item[-5] == "-":
+                dList.append(item)
+                lbox.insert(tk.END, item)
+
+        if selectDay == "" and len(dList) > 1:
+            selectDay = dList[0]
+        label5.configure(text="Selecting day:" + selectDay)
+        if selectDay != "":
+            ListOfimg = os.listdir(selectDay + "/img/")
+            ListOflog = os.listdir(selectDay + "/log/")
+            ListOfimg.sort(reverse=True)
+            ListOflog.sort(reverse=True)
+            for item in ListOfimg:
+                lboxofimg.insert(tk.END, item)
+            for item in ListOflog:
+                lboxoflog.insert(tk.END, item)
 
     def parent_gui(self):
-        self.main_menu()
+        self.main_menu(selectDay="")
 
     def clear_widgets(self):
+        print("clearing widget")
         for widgets in self.master.winfo_children():
-            widgets.forget()
+            widgets.place_forget()
 
     def logic(self):
         if self.tm.in_penalty():
@@ -374,6 +557,7 @@ class MainProgram:
                     self.submit_btn.forget()
                     self.parent_gui()
                     self.count_parent()
+                    self.clear_widgets()
                 elif not self.tm.in_use_time():
                     self.label_text.set(f'Not yet time to use the machine!\n'
                                         f'{self.tm.cant_use_reason()}')
@@ -383,6 +567,8 @@ class MainProgram:
                     lock.acquire()
                     time.sleep(5)
                     lock.release()
+                    self.clear_widgets()
+
                 else:
                     self.label_text.set("Logged in as child!")
                     self.entry.forget()

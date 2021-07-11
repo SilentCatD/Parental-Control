@@ -32,6 +32,21 @@ class TimeManager(DataFileManager):
         self.data = self.get_data()
         self.curr_time_rule = self.load_curr_time_rule()
 
+    def split_time(self, time_rules):
+        store = [''] * 5
+        for i in time_rules.split():
+            if i[0] == 'F':
+                store[0] = i[1:]
+            elif i[0] == 'T':
+                store[1] = i[1:]
+            elif i[0] == 'D':
+                store[2] = i[1:]
+            elif i[0] == 'I':
+                store[3] = i[1:]
+            elif i[0] == 'S':
+                store[4] = i[1:]
+        return store
+
     def update_data(self):
         self.data = self.get_data()
 
