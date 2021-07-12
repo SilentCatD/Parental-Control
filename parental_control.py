@@ -478,7 +478,7 @@ class MainProgram:
         label2 = tk.Label(text="Keyboard log and app log")
         label3 = tk.Label(text="list of dates")
         label4 = tk.Label(
-            text="ABOUS US \n 19127373 - Hồ Văn Duy \n 19127519 - Nguyễn Ngọc Phước\n 19127369 - Lê Minh Đức \n "
+            text="ABOUT US \n 19127373 - Hồ Văn Duy \n 19127519 - Nguyễn Ngọc Phước\n 19127369 - Lê Minh Đức \n "
                  "19127384 - Nguyễn Trường Giang \n 19127385 - Phạm Lê Hạ")
         label5 = tk.Label(text="Selecting day:")
         lbox.place(x=50, y=40)
