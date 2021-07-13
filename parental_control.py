@@ -41,8 +41,8 @@ class MainProgram:
     def shutdown(self):
         self.data_mng.switch_writing(False)
         self.data_mng.switch_editing(False)
-        subprocess.run('echo shut down', shell=True)
-        # subprocess.run('shutdown /s /t 1', shell=True)
+        # subprocess.run('echo shut down', shell=True)
+        subprocess.run('shutdown /s /t 1', shell=True)
 
     def create_main_window(self):
         self.master.title("Parental Control")
