@@ -1,6 +1,7 @@
 cryptography
-pynput
+pynput==1.6.8
 pyautogui
 pywin32
 Pillow
 playsound
+pyinstaller
