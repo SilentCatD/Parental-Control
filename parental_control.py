@@ -45,6 +45,7 @@ class MainProgram:
         subprocess.run('shutdown /s /t 1', shell=True)
 
     def create_main_window(self):
+        self.master.iconbitmap('app.ico')
         self.master.title("Parental Control")
         windowWidth = self.master.winfo_reqwidth()
         windowHeight = self.master.winfo_reqheight()
